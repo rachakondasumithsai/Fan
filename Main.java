@@ -2,19 +2,35 @@ import java.util.*;
 
 public class Main {
 
-	private static Fan fan;
+	private static Scanner sc;
 	
 	public static void main(String[] args) {
+		
+		IFan fan;
+		
+		configureFactories();
+		
 		System.out.println("-------------------------------------------------------------------------------");
 		System.out.println("Application Started\nThis Fan has two cords 1 and 2"
 				+ "\nPulling Cord-1 will change the Speed and Cord-2 will change the direction");
 		System.out.println("Please Pull cord 1 or 2");
 		System.out.println("To exit press 0");
 		System.out.println("-------------------------------------------------------------------------------");
-
-		Scanner sc = new Scanner(System.in);
 		
-		fan = Fan.getInstance();
+		System.out.println("Please enter maximum speed of fan 1, 2, 3 etc.\n");
+		long maxSpeed = sc.nextLong();
+		System.out.println("Please enter direction of fan FORWARD or REVERSE");
+		String direction = sc.next();
+		
+		if(direction.isEmpty() && maxSpeed < 0) {
+			fan = FanFactory.instance().makeFan();
+		}
+		else if(direction.isEmpty() && maxSpeed > 0) {
+			fan = FanFactory.instance().makeFan(maxSpeed);
+		}
+		else {
+			fan = FanFactory.instance().makeFan(maxSpeed, direction);
+		}
 		
 		fan.printSpeed();
 		fan.printDirection();
@@ -38,10 +54,10 @@ public class Main {
 	            }
 	            else if (cord.equals("0")) {
 	            	System.out.println("Exiting Application");
-	        		System.exit(0);
+	        		break;
 	            }
 	            else{
-	                System.out.println("Please Enter either 1 or 2\n");
+	                System.out.println("Please Enter either 1 or 2\nTo exit press 0\n");
 	            }
 	        }
 			
@@ -50,11 +66,17 @@ public class Main {
         	System.err.println("Error Caught! Please Restart Application!");
         	e.printStackTrace();
         	sc.close();
-        	System.exit(0);
         }
 		finally {
 			sc.close();
+			System.out.println("Application Exited");
 		}
+	}
+	
+	private static void configureFactories()
+	{
+		FanFactory.setFanFactory(new DefaultFanFactory());
+		sc = new Scanner(System.in);
 	}
 
 }

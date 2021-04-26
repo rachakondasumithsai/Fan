@@ -1,46 +1,83 @@
-public class Fan {
-	private static Fan instance;
-	private int currentFanSpeed;
+public class Fan implements IFan{
+	private long currentFanSpeed;
 	private String currentFanDirection;
 	private static final String FORWARD = "FORWARD";
 	private static final String REVERSE = "REVERSE";
+	private long maxSpeed;
 
-    private Fan(){
+    public Fan(){
         this.currentFanSpeed = 0;
         this.currentFanDirection = FORWARD;
-    	System.out.println("Fan is installed and powered on");
-    }
-
-    public static Fan getInstance() {
-    	if(instance == null){
-            instance = new Fan();
-        }
-        return instance;
+        this.setMaxSpeed(3);
+        System.out.println("Fan is installed and powered on. Max Speed is "
+                + (this.getMaxSpeed()-1) + " Current Direction is " + this.getCurrentFanDirection());
     }
     
-    private int getCurrentFanSpeed() {
+    public Fan(long maxSpeed){
+        this.currentFanSpeed = 0;
+        this.currentFanDirection = FORWARD;
+        this.setMaxSpeed(maxSpeed);
+        System.out.println("Fan is installed and powered on. Max Speed is "
+                + (this.getMaxSpeed()-1) + " Current Direction is " + this.getCurrentFanDirection());
+    }
+    
+    public Fan(long maxSpeed, String direction){
+        this.currentFanSpeed = 0;
+        this.setMaxSpeed(maxSpeed);
+        if(direction.equalsIgnoreCase(FORWARD)||direction.equalsIgnoreCase(REVERSE)){
+        	this.setCurrentFanDirection(direction.toUpperCase());
+        }
+        else {
+        	System.out.println("Invalid input, Setting default direction FORWARD");
+        	this.setCurrentFanDirection(FORWARD);
+        }
+    	System.out.println("Fan is installed and powered on. Max Speed is "
+        + (this.getMaxSpeed()-1) + " Current Direction is " + this.getCurrentFanDirection());
+    }
+    
+    public Fan(String direction){
+        this.currentFanSpeed = 0;
+        this.setMaxSpeed(maxSpeed);
+        if(direction.equalsIgnoreCase(FORWARD)||direction.equalsIgnoreCase(REVERSE)){
+        	this.setCurrentFanDirection(direction.toUpperCase());
+        }
+        else {
+        	System.out.println("Invalid input, Setting default direction FORWARD");
+        	this.setCurrentFanDirection(FORWARD);
+        }
+        System.out.println("Fan is installed and powered on. Max Speed is "
+                + (this.getMaxSpeed()-1) + " Current Direction is " + this.getCurrentFanDirection());
+    }
+
+    @Override
+    public long getCurrentFanSpeed() {
         return currentFanSpeed;
     }
 
-    private void setCurrentFanSpeed(int currentFanSpeed) {
+    @Override
+    public void setCurrentFanSpeed(long currentFanSpeed) {
         this.currentFanSpeed = currentFanSpeed;
     }
     
-    private String getCurrentFanDirection() {
+    @Override
+    public String getCurrentFanDirection() {
         return currentFanDirection;
     }
     
-    private void setCurrentFanDirection(String currentFanDirection) {
+    @Override
+    public void setCurrentFanDirection(String currentFanDirection) {
         this.currentFanDirection = currentFanDirection;
     }
 
 
+    @Override
     public void changeFanSpeed(){
-        int currentSpeed = this.getCurrentFanSpeed();
-    	this.setCurrentFanSpeed(((++currentSpeed) % 4));
+        long currentSpeed = this.getCurrentFanSpeed();
+    	this.setCurrentFanSpeed(((++currentSpeed) % maxSpeed));
     }
 
     
+    @Override
     public void changeFanDirection(){
         if (this.getCurrentFanDirection().equals(FORWARD)) {
 			this.setCurrentFanDirection(REVERSE);
@@ -50,6 +87,7 @@ public class Fan {
         }
     }
     
+    @Override
     public void printSpeed() {
     	System.out.println();
     	if(this.getCurrentFanSpeed() == 0) {
@@ -60,9 +98,34 @@ public class Fan {
     	}
     }
     
+    @Override
     public void printDirection() {
     	System.out.println("\tCurrent Direction: " + this.getCurrentFanDirection());
     	System.out.println();
     }
+
+    @Override
+    public long getMaxSpeed() {
+		return maxSpeed;
+	}
+
+	@Override
+	public void setMaxSpeed(long maxSpeed) {
+		if(maxSpeed>0) {
+			this.maxSpeed = ++maxSpeed;
+		}
+		else {
+			System.out.println("Invalid max speed, setting max speed to default 3");
+			this.maxSpeed = 4;
+		}
+	}
+
+	@Override
+	public void setDefaults() {
+		this.maxSpeed = 3;
+		this.currentFanSpeed = 0;
+		this.currentFanDirection = Fan.FORWARD;
+		
+	}
 
 }
